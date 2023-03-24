@@ -1,21 +1,17 @@
-# servos
-practicas
 #include <Servo.h>
 
 //Pin de control do servo
 #define CTRL 3
 
-//Pin de lectura do potenc
+//Pin de lectura do potenciometro
 #define POT A5
 
-//Declaramos o obxecto motor
-//da clase Servo
+
 Servo motor;
 int angulo = 0;
 int veloc = 125;
 
 String orde ="";
-int posicion = 0;
 
 void setup() {
   motor.attach(CTRL);
@@ -23,26 +19,31 @@ void setup() {
 }
 
 void loop() {
-  if(angulo = analogRead(POT)){
-  angulo = map(angulo, 0, 1023, 0, 180);
-  //Actualiza servo
-  motor.write(angulo);
-  delay(veloc);
-  }
-  else(Serial.available()); {
+  //primeiro lee a orde do monitor serie(si a hay)
+  if(Serial.available()) {
     orde = Serial.readStringUntil('\n');
-    orde.toLowerCase();
-    if(orde.equals("esquerda")) posicion = 180;
-    else if(orde.equals("dereita")) posicion = 0;
-    else if(orde.equals("centro")) posicion = 90;
+    orde.toLowerCase(); 
+    //se definimos unha posicion para a palabra
+    if(orde.equals("esquerda")){angulo = 180;}
+    else if(orde.equals("centro")){angulo = 90;}
+    else if(orde.equals("dereita")){angulo = 0;}
+  
     else {
       int tmp = orde.toInt();
-      if(tmp >= 0 && tmp <= 180) posicion = tmp;
-      else posicion = 0;
-      
-       motor.write(posicion);
-  delay(veloc);
-
+      if(tmp >= 0 && tmp <= 180) angulo = tmp;
+      else angulo = 0;
     }
+  } 
+  else {
+    
+    //si non hay nada no monitor colocase na posicion do potenciometro
+  angulo = analogRead(POT);
+  angulo = map(angulo, 0, 1023, 0, 180);
   }
+
+  //move o servo a posicion deseada
+  motor.write(angulo);
+  delay(200);
+  Serial.println(angulo);
+  
 }
