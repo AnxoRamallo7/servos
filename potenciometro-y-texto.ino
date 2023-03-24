@@ -43,7 +43,7 @@ void loop() {
 
   //move o servo a posicion deseada
   motor.write(angulo);
-  delay(200);
+  delay(1000);
   Serial.println(angulo);
   
 }
